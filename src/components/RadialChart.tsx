@@ -4,12 +4,14 @@ import { WeatherData } from "../models/WeatherData";
 
 type RadialChartProps = {
   data: WeatherData[];
+  range: Date[] | undefined;
+  updateRange: (range: Date[]) => void;
 };
 
 const width = 650;
 const height = 650;
 
-const RadialChart = ({ data }: RadialChartProps) => {
+const RadialChart = ({ data, range }: RadialChartProps) => {
   const { slices, tempAnnotations } = useMemo(() => {
     if (!data) return { slices: [], tempAnnotations: [] };
 
@@ -38,7 +40,14 @@ const RadialChart = ({ data }: RadialChartProps) => {
         innerRadius: radiusScale(d.low),
         outerRadius: radiusScale(d.high),
       });
-      return { path, fill: colorScale(d.avg) };
+      // slice should be colored if there's no time range
+      // or if the slice is within the time range
+      const isColored =
+        !range || (range.length && range[0] <= d.date && d.date <= range[1]);
+      return {
+        path,
+        fill: isColored ? colorScale(d.avg) : "#ccc",
+      };
     });
 
     const tempAnnotations = [5, 20, 40, 60, 80].map((temp) => {
@@ -49,7 +58,7 @@ const RadialChart = ({ data }: RadialChartProps) => {
     });
 
     return { slices, tempAnnotations };
-  }, [data]);
+  }, [data, range]);
 
   return (
     <svg width={width} height={height}>

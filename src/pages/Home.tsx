@@ -9,6 +9,7 @@ type TempsData = Record<string, WeatherData[]>;
 const Home = () => {
   const [temps, setTemps] = useState<TempsData>({});
   const [city, setCity] = useState("sf");
+  const [range, setRange] = useState<Date[] | undefined>();
 
   useEffect(() => {
     Promise.all([fetch("/sf.json"), fetch("/ny.json")])
@@ -24,9 +25,11 @@ const Home = () => {
   const updateCity = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCity(e.target.value);
   };
+  const updateRange = (range: Date[]) => {
+    setRange(range);
+  };
 
   const data = temps[city];
-  console.log(data);
 
   return (
     <div className="w-screen h-screen">
@@ -54,9 +57,9 @@ const Home = () => {
           warning: these are <em>not</em> meant to be good examples of data
           visualizations, but just to show the possibility of using D3 and React
         </p>
-        <RadialChart data={data} />
-        <BarChart data={data} />
-        <LineChart data={data} />
+        <RadialChart data={data} range={range} updateRange={updateRange} />
+        <BarChart data={data} range={range} updateRange={updateRange} />
+        <LineChart data={data} range={range} updateRange={updateRange} />
         <p>
           (Weather data from{" "}
           <a href="wunderground.com" target="_blank">
