@@ -96,10 +96,15 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
       ])
       .on("start brush end", (event) => {
         // d3.event is deprecated
-        const [minX, maxX] = event.selection;
-        const range = [xScale.invert(minX), xScale.invert(maxX)];
-        // console.log(range);
-        updateRange(range);
+        if (event.selection) {
+          const [minX, maxX] = event.selection;
+          const range = [xScale.invert(minX), xScale.invert(maxX)];
+
+          updateRange(range);
+        } else {
+          const xExtent = d3.extent(data, (d) => d.date) as [Date, Date];
+          updateRange(xExtent);
+        }
       });
 
     if (brushRef.current) {

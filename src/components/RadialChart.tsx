@@ -87,7 +87,7 @@ const RadialChart = ({ data, range }: RadialChartProps) => {
           <g key={i}>
             <circle r={d.r} fill="none" stroke="#999" />
             <text y={-d.r - 2} textAnchor="middle">
-              {d.temp}℉
+              {d.temp}
             </text>
           </g>
         ))}
