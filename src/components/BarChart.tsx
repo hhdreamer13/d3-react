@@ -18,14 +18,23 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
   const yAxisRef = useRef(null);
   const brushRef = useRef(null);
 
+  // function to brush the desired area
+  const isColored = (d: WeatherData) => {
+    return !range || (range.length && range[0] <= d.date && d.date <= range[1]);
+  };
+
   // useMemo and chart calculations
-  const { bars, xScale, yScale } = useMemo(() => {
+  const { bars, xScale, yScale, colorScale } = useMemo(() => {
     // When data is not ready
     if (!data) {
       return {
         bars: [],
         xScale: d3.scaleTime().domain([new Date(), new Date()]),
         yScale: d3.scaleLinear().domain([0, 1]),
+        colorScale: d3
+          .scaleSequential()
+          .domain([0, 1])
+          .interpolator(d3.interpolateRdYlBu),
       };
     }
 
@@ -53,18 +62,16 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
       .interpolator(d3.interpolateRdYlBu);
 
     const bars = data.map((d) => {
-      const isColored =
-        !range || (range.length && range[0] <= d.date && d.date <= range[1]);
-      console.log(isColored);
       return {
         x: xScale(d.date),
         y: yScale(d.high),
         height: yScale(d.low) - yScale(d.high),
-        fill: isColored ? colorScale(d.avg) : "#ccc",
+        fill: "",
       };
     });
-    return { bars, xScale, yScale };
-  }, [data, range]);
+
+    return { bars, xScale, yScale, colorScale };
+  }, [data]);
 
   // Draw the axis
   useEffect(() => {
@@ -91,13 +98,14 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
         // d3.event is deprecated
         const [minX, maxX] = event.selection;
         const range = [xScale.invert(minX), xScale.invert(maxX)];
+        // console.log(range);
         updateRange(range);
       });
 
     if (brushRef.current) {
       d3.select<SVGGElement, unknown>(brushRef.current).call(brush);
     }
-  }, [range]);
+  }, [range, updateRange]);
 
   return (
     <svg width={width} height={height}>
@@ -108,7 +116,7 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
           y={d.y}
           width={2}
           height={d.height}
-          fill={d.fill}
+          fill={isColored(data[i]) ? colorScale(data[i].avg) : "#ccc"}
         />
       ))}
       <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />

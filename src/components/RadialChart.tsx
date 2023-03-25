@@ -12,8 +12,20 @@ const width = 650;
 const height = 650;
 
 const RadialChart = ({ data, range }: RadialChartProps) => {
-  const { slices, tempAnnotations } = useMemo(() => {
-    if (!data) return { slices: [], tempAnnotations: [] };
+  const isColored = (d: WeatherData) => {
+    return !range || (range.length && range[0] <= d.date && d.date <= range[1]);
+  };
+
+  const { slices, tempAnnotations, colorScale } = useMemo(() => {
+    if (!data)
+      return {
+        slices: [],
+        tempAnnotations: [],
+        colorScale: d3
+          .scaleSequential()
+          .domain([0, 1])
+          .interpolator(d3.interpolateRdYlBu),
+      };
 
     const radiusScale = d3
       .scaleLinear()
@@ -46,7 +58,7 @@ const RadialChart = ({ data, range }: RadialChartProps) => {
         !range || (range.length && range[0] <= d.date && d.date <= range[1]);
       return {
         path,
-        fill: isColored ? colorScale(d.avg) : "#ccc",
+        fill: "",
       };
     });
 
@@ -57,14 +69,18 @@ const RadialChart = ({ data, range }: RadialChartProps) => {
       };
     });
 
-    return { slices, tempAnnotations };
-  }, [data, range]);
+    return { slices, tempAnnotations, colorScale };
+  }, [data]);
 
   return (
     <svg width={width} height={height}>
       <g transform={`translate(${width / 2}, ${height / 2})`}>
         {slices.map((d, i) => (
-          <path key={i} d={d.path ?? undefined} fill={d.fill} />
+          <path
+            key={i}
+            d={d.path ?? undefined}
+            fill={isColored(data[i]) ? colorScale(data[i].avg) : "#ccc"}
+          />
         ))}
 
         {tempAnnotations.map((d, i) => (

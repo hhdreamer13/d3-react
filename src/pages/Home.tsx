@@ -10,6 +10,7 @@ const Home = () => {
   const [temps, setTemps] = useState<TempsData>({});
   const [city, setCity] = useState("sf");
   const [range, setRange] = useState<Date[] | undefined>();
+  console.log(range);
 
   useEffect(() => {
     Promise.all([fetch("/sf.json"), fetch("/ny.json")])
