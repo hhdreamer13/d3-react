@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import RadialChart from "../components/RadialChart";
-import Chart from "../components/Chart";
+import BarChart from "../components/BarChart";
 import { WeatherData } from "../models/WeatherData";
+import LineChart from "../components/LineChart";
 
 type TempsData = Record<string, WeatherData[]>;
 
@@ -35,7 +36,7 @@ const Home = () => {
           <select
             name="city"
             onChange={updateCity}
-            className="text-lg px-3 py-2 rounded-md mx-auto block my-1"
+            className="text-lg px-3 py-2 outline-none rounded-md mx-auto block my-1"
           >
             {[
               { label: "San Francisco", value: "sf" },
@@ -54,8 +55,8 @@ const Home = () => {
           visualizations, but just to show the possibility of using D3 and React
         </p>
         <RadialChart data={data} />
-        <Chart data={data} />
-
+        <BarChart data={data} />
+        <LineChart data={data} />
         <p>
           (Weather data from{" "}
           <a href="wunderground.com" target="_blank">

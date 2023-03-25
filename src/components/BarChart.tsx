@@ -10,7 +10,7 @@ type ChartProps = {
   data: WeatherData[];
 };
 
-const Chart = ({ data }: ChartProps) => {
+const BarChart = ({ data }: ChartProps) => {
   const barChart = useMemo(() => {
     if (!data) return [];
 
@@ -44,8 +44,6 @@ const Chart = ({ data }: ChartProps) => {
     return bars;
   }, [data]);
 
-  console.log(barChart);
-
   return (
     <svg width={width} height={height}>
       {barChart.map((d, i) => (
@@ -62,4 +60,4 @@ const Chart = ({ data }: ChartProps) => {
   );
 };
 
-export default Chart;
+export default BarChart;
