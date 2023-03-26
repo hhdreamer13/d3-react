@@ -39,7 +39,7 @@ const Home = () => {
           <select
             name="city"
             onChange={updateCity}
-            className="text-lg px-3 py-2 outline-none rounded-md mx-auto block my-1"
+            className="text-lg px-3 py-2 outline-none border drop-shadow-sm rounded-md mx-auto block my-1"
           >
             {[
               { label: "San Francisco", value: "sf" },
@@ -53,10 +53,7 @@ const Home = () => {
             })}
           </select>
         </h1>
-        <p className="text-warning">
-          warning: these are <em>not</em> meant to be good examples of data
-          visualizations, but just to show the possibility of using D3 and React
-        </p>
+        <p className="text-warning">This is an example of data visualization</p>
         <RadialChart data={data} range={range} updateRange={updateRange} />
         <BarChart data={data} range={range} updateRange={updateRange} />
         <LineChart data={data} range={range} updateRange={updateRange} />

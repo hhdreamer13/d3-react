@@ -94,7 +94,7 @@ const BarChart = ({ data, range, updateRange }: ChartProps) => {
         [margin.left, margin.top], // top-left
         [width - margin.right, height - margin.bottom], // bottom-right
       ])
-      .on("start brush end", (event) => {
+      .on("end", (event) => {
         // d3.event is deprecated
         if (event.selection) {
           const [minX, maxX] = event.selection;
